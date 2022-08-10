@@ -26,10 +26,13 @@ In order to follow the steps you need:
 
 1. Airflow Concepts
 2. Getting Started with Airflow in CDE
-3. 
+3. Beyond Airflow for Spark Jobs
+4. Airflow DAG Advanced Features
+5. Airflow Job Management with the CDE API and CLI
+6. CDE Airflow FAQs
 
 
-## Airflow Concepts
+## 1. Airflow Concepts
 
 #### The Airflow DAG
 
@@ -70,7 +73,7 @@ CDE Airflow imposes no limitations on Operators, Plugins or other integrations w
 For an example DAG in CDE using the two operators reference the [CDE Cloudera documentation](https://docs.cloudera.com/data-engineering/cloud/orchestrate-workflows/topics/cde-airflow-editor.html).
 
 
-## Getting Started with Airflow in CDE
+## 2. Getting Started with Airflow in CDE
 
 #### Accessing the CDE Airflow UI
 
@@ -82,15 +85,22 @@ From your Virtual Cluster Service Details page, open the Airflow UI by clicking 
 
 ![alt text](img/cde_airflow_3.png)
 
+#### Building Your Fist CDE Airflow DAG
+
+We will start with a simple Airflow DAG that executes one Spark CDE Job. 
+
+We will work with the following artifacts:
+* A python file containing Airflow DAG
+* A pythong file containing a PySpark job
+
+
+#### Running Your First CDE Airflow DAG
 
 #### Interpreting the CDE Airflow UI
 
 
-#### Building Your Fist CDE Airflow DAG
 
-
-#### Using a Python Environment Resource to Power your CDE Airflow DAG
-
+## 3. Beyond Airflow for Spark Jobs
 
 #### Using the CDWRunOperator 
 
@@ -98,13 +108,19 @@ From your Virtual Cluster Service Details page, open the Airflow UI by clicking 
 
 #### Using the HTTPOperator
 
+
+
+
+## 4. Airflow DAG Advanced Features
+
+#### Using XComs
+
 #### Writing a Custom Opeator
 
+#### Using a Python Environment CDE Resource for your CDE Airflow DAG
 
 
-
-
-
+## 5. Airflow Job Management with the CDE API and CLI
 
 #### Using the CDE CLI for Airflow CDE Jobs
 
