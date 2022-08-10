@@ -79,19 +79,56 @@ For an example DAG in CDE using the two operators reference the [CDE Cloudera do
 
 From your Virtual Cluster Service Details page, open the Airflow UI by clicking on the related icon as shown below.
 
-
 ![alt text](img/cde_airflow_2.png)
-
 
 ![alt text](img/cde_airflow_3.png)
 
 #### Building Your Fist CDE Airflow DAG
 
-We will start with a simple Airflow DAG that executes one Spark CDE Job. 
+We will start with a simple Airflow DAG that executes a Spark CDE Job and a shell command. 
 
 We will work with the following artifacts:
-* A python file containing Airflow DAG
-* A pythong file containing a PySpark job
+* A python file containing Airflow DAG. This is provided under cde_jobs/firstdag.py.
+* A pythong file containing a PySpark job. This is provided under cde_jobs/sql.py.
+
+##### Step 1: Create a Spark CDE Job
+
+Navigate to the CDE Virtual Cluster page. 
+
+![alt text](img/part2_step1.png)
+
+Open the Jobs UI and click on "Create Job" on the right side.   
+
+![alt text](img/part2_step2.png)
+
+Now fill out the form. Pick "sql.py" as your spark job file. 
+
+Then, you will be prompted to select a resource. Create a new one with name "firstdag".
+
+Resources are repositories inside the Virtual Cluster where you can store files, dependencies, and manage python environments.
+
+For more info on resources, please visit the [CDE Documentation](https://docs.cloudera.com/data-engineering/cloud/overview/topics/cde-resources.html).
+
+![alt text](img/part2_step3.png)
+
+At the bottom of the form, make sure to select "Create" rather than "Create and Run" by clicking on the down arrow first. 
+
+![alt text](img/part2_step4.png)
+
+The Spark CDE Job is now available in the Jobs UI. 
+
+
+##### Step 2: Review the Airflow DAG
+
+In your editor, open the "firstdag.py" file located in the cde_jobs folder.
+
+
+##### Step 3: Edit the Airflow DAG
+
+
+##### 
+
+
 
 
 #### Running Your First CDE Airflow DAG
