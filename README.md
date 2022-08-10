@@ -1,5 +1,7 @@
 # Using CDE Airflow
 
+## NB: This project is WIP 
+
 ## Objective
 
 This tutorial provides a reference of Airflow features and capabilities in CDE, the Cloudera Data Enginereering Service available in CDP Public and Private Cloud. 
@@ -7,6 +9,9 @@ This tutorial provides a reference of Airflow features and capabilities in CDE, 
 Apache Airflow is a platform to author, schedule and execute Data Engineering pipelines. It is widely used by the community to create dynamic and robust workflows for batch Data Engineering use cases. 
 
 CDE embeds Apache Airflow at the CDE Virtual Cluster level. It is automatically deployed for the CDE user during CDE Virtual Cluster creation and requires no maintenance on the part of the CDE Admin.
+
+![alt text](img/top_reasons_airflowincde.png)
+
 
 ## Requirements
 
@@ -17,19 +22,12 @@ In order to follow the steps you need:
 * Optional: a CDW Virtual Cluster. This will be required by the steps covering the Airflow CDW Operator to run Impala and Hive queries.
 
 
-## What is an Airflow CDE Job?
+## Project Contents
 
-CDE Jobs can be of two types: Spark and Airflow. Airflow CDE Jobs are typically used to orchestrate Spark CDE Jobs as well as other Data Engineering actions. 
+1. Airflow Concepts
+2. Getting Started with Airflow in CDE
+3. 
 
-CDE Jobs of type Airflow consist primarily of an Airflow DAGs contained in a Python file. More on DAGs below.
-
-There are three ways to build an Airflow CDE Job:
-
-* Using the CDE Web interface. For more information, see [Running Jobs in Cloudera Data Engineering](https://docs.cloudera.com/data-engineering/cloud/manage-jobs/topics/cde-run-job.html).
-* Using the CDE CLI tool. For more information, see Using the [Cloudera Data Engineering command line interface](https://docs.cloudera.com/data-engineering/cloud/cli-access/topics/cde-cli.html).
-* Using CDE Rest API endpoints. For more information, see [CDE API Jobs](https://docs.cloudera.com/data-engineering/cloud/jobs-rest-api-reference/index.html)
-
-In addition, you can automate migrations from Oozie on CDP Public Cloud Data Hub, CDP Private Cloud Base, CDH and HDP to Spark and Airflow CDE Jobs with the [oozie2cde API](https://github.com/pdefusco/Oozie2CDE_Migration). 
 
 ## Airflow Concepts
 
@@ -44,8 +42,22 @@ For an example DAG in CDE reference the [CDE Cloudera documentation](https://doc
 
 #### The Airflow UI
 
-The Airflow UI makes it easy to monitor and troubleshoot your data pipelines. For a complete overview of the Airflow UI, see  Apache Airflow documentation (here).
+The Airflow UI makes it easy to monitor and troubleshoot your data pipelines. For a complete overview of the Airflow UI reference the [Apache Airflow documentation](https://airflow.apache.org/docs/apache-airflow/stable/ui.html).
  
+#### What is an Airflow CDE Job?
+
+CDE Jobs can be of two types: Spark and Airflow. Airflow CDE Jobs are typically used to orchestrate Spark CDE Jobs as well as other Data Engineering actions. 
+
+CDE Jobs of type Airflow consist primarily of an Airflow DAGs contained in a Python file. More on DAGs below.
+
+There are three ways to build an Airflow CDE Job:
+
+* Using the CDE Web interface. For more information, see [Running Jobs in Cloudera Data Engineering](https://docs.cloudera.com/data-engineering/cloud/manage-jobs/topics/cde-run-job.html).
+* Using the CDE CLI tool. For more information, see Using the [Cloudera Data Engineering command line interface](https://docs.cloudera.com/data-engineering/cloud/cli-access/topics/cde-cli.html).
+* Using CDE Rest API endpoints. For more information, see [CDE API Jobs](https://docs.cloudera.com/data-engineering/cloud/jobs-rest-api-reference/index.html)
+
+In addition, you can automate migrations from Oozie on CDP Public Cloud Data Hub, CDP Private Cloud Base, CDH and HDP to Spark and Airflow CDE Jobs with the [oozie2cde API](https://github.com/pdefusco/Oozie2CDE_Migration). 
+
 #### Open Source vs CDE Airflow
 
 CDE packages the open source version of Airflow. Airflow is maintained and upgraded at each CDE version update. For example, the version of CDE 1.16 includes Airflow 2.2.5. 
@@ -56,6 +68,9 @@ CDE Airflow imposes no limitations on Operators, Plugins or other integrations w
 * CDW Operator: used to orchestrate CDW Hive or Impala queries. This requires a Cloudera Virtual Warehouse and setting up an Airflow connection to it. 
 
 For an example DAG in CDE using the two operators reference the [CDE Cloudera documentation](https://docs.cloudera.com/data-engineering/cloud/orchestrate-workflows/topics/cde-airflow-editor.html).
+
+
+## Getting Started with Airflow in CDE
 
 #### Accessing the CDE Airflow UI
 
@@ -68,7 +83,30 @@ From your Virtual Cluster Service Details page, open the Airflow UI by clicking 
 ![alt text](img/cde_airflow_3.png)
 
 
-## Using the CDE CLI for Airflow CDE Jobs
+#### Interpreting the CDE Airflow UI
+
+
+#### Building Your Fist CDE Airflow DAG
+
+
+#### Using a Python Environment Resource to Power your CDE Airflow DAG
+
+
+#### Using the CDWRunOperator 
+
+#### Using the BashOperator 
+
+#### Using the HTTPOperator
+
+#### Writing a Custom Opeator
+
+
+
+
+
+
+
+#### Using the CDE CLI for Airflow CDE Jobs
 
 For Spark CDE Jobs, the CDE CLI provides an intuitive solution to create and manage Airflow CDE Jobs. 
 
@@ -88,7 +126,7 @@ Notice that the --application-file flag has been replaced with the --dag-file fl
 cde job create --name myairflowjob --type airflow --dag-file path/to/airflow_dag.py
 ```
 
-##### Using the CDE API for Airflow CDE Jobs
+#### Using the CDE API for Airflow CDE Jobs
 
 As with the CDE CLI, this section builds on the prior examples on the CDE API with Spark CDE Jobs.
 
@@ -101,3 +139,43 @@ curl -H "Authorization: Bearer $ACCESS_TOKEN" -X 'POST' \
 -H 'Content-Type: application/json' \
 -d '{"type": "airflow", "airflow": {"dagFile": "my_dag.py"}, "identity": {"disableRoleProxy": true},"mounts": [{"dirPrefix": "/","resourceName": "oozie_migration"}],"name": "oozie2airflow_migration","retentionPolicy": "keep_indefinitely"}'
 ```
+
+## CDE Airflow FAQs
+
+1. Can you connect a CDE Airflow Instance to an Open Source instance outside of CDP/CDE?
+
+Yes, if you have complex Airflow implementations and have a need to keep them running you can connect one to the other
+
+2. How ca
+
+3. 
+
+Don't find your question here? Please reach out to your Cloudera Account Team or [submit your questions thorugh this form](https://www.cloudera.com/contact-sales.html).
+
+
+## Conclusions & Next Steps
+
+CDE is the Cloudera Data Engineering Service, a containerized managed service for Spark and Airflow. 
+Top benefits of using CDE include:
+
+* Ability to pick Spark versions
+* Apache Airflow Scheduling
+* Enhanced Observability with Tuning, Job Analysis and Troubleshooting interfaces.
+* Job Management via a CLI and an API. 
+
+If you are exploring CDE you may find the following tutorials relevant:
+
+* [Spark 3 & Iceberg](https://github.com/pdefusco/Spark3_Iceberg_CML): a quick intro of Time Travel Capabilities with Spark 3
+
+* [Simple Intro to the CDE CLI](https://github.com/pdefusco/CDE_CLI_Simple): A simple introduction to the CDE CLI for the 
+
+* [CDE CLI Demo](https://github.com/pdefusco/CDE_CLI_demo): A more advanced CDE CLI reference with additional details for the CDE user who wants to move beyond the basics shown here. 
+
+* [GitLab2CDE](https://github.com/pdefusco/Gitlab2CDE): a CI/CD pipeline to orchestrate Cross Cluster Workflows - Hybrid/Multicloud Data Engineering
+
+* [CML2CDE](https://github.com/pdefusco/CML2CDE): a CI/CD Pipeline to deploy Spark ETL at Scale with Python and the CDE API
+
+* [Postman2CDE](https://github.com/pdefusco/Oozie2CDE_Migration): using the Postman API to bootstrap CDE Services
+
+
+
