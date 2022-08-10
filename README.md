@@ -101,9 +101,7 @@ Open the Jobs UI and click on "Create Job" on the right side.
 
 ![alt text](img/part2_step2.png)
 
-Now fill out the form. Pick "sql.py" as your spark job file. 
-
-Then, you will be prompted to select a resource. Create a new one with name "firstdag".
+Now fill out the form. Pick "sql.py" as your spark job file. Then, you will be prompted to select a resource. Create a new one with name "firstdag".
 
 Resources are repositories inside the Virtual Cluster where you can store files, dependencies, and manage python environments.
 
