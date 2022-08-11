@@ -48,4 +48,4 @@ dw_step3 = CDWOperator(
     query_isolation=True
 )
 
-spark_step >> shell
+spark_step >> shell >> dw_step3
