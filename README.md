@@ -197,21 +197,21 @@ Finally, at line 36 we declare Task Dependencies. With this statement you can sp
 spark_step >> shell 
 ```
 
-Before moving on, make sure to open the DAG python file in your editor and replace the current value of the 'Owner' with your CDP Username in the default arguments dictionary.
-No other changes are required at this time.
+*Before moving on, make sure to open the DAG python file in your editor and replace the current value of the 'Owner' with your CDP Username in the default arguments dictionary.
+No other changes are required at this time.*
 
 
 #### Step 3: Running Your First CDE Airflow DAG
 
 Navigate back to the CDE Jobs page and create a new CDE Job. Make sure to pick the following settings:
 
-```
-Type: Airflow
-Name: FirstDag
-Dag File: Select type "File" and then upload "firstdag.py" to the firstdag CDE Resource you created earlier.
 
-Feel free to select "Create and Run" to trigger the job immediately.
-```
+* Type: Airflow
+* Name: FirstDag
+* Dag File: Select type "File" and then upload "firstdag.py" to the firstdag CDE Resource you created earlier.
+
+Select "Create and Run" to trigger the job immediately.
+
 
 ![alt text](img/part2_step6.png)
 
@@ -314,9 +314,28 @@ curl -H "Authorization: Bearer $ACCESS_TOKEN" -X 'POST' \
 
 Yes, if you have complex Airflow implementations and have a need to keep them running you can connect one to the other
 
-2. How ca
 
-3. 
+2. Can airflow be used to orchestrate workloads on Private cloud base?
+
+Yes, please visit this github for a demonstration (*coming soon*)
+
+
+3. Can airflow be run as a standalone product?
+
+Not as of CDE 1.16. This is on the CDE roadmap. 
+
+
+4. Can I install some cloud native plugins into the version of airflow shipped by Cloudera?
+
+You cannot install plugins in CDE Public Cloud however you can do so in CDE Private Cloud.
+
+
+5. Can airflow be used to orchestrate workloads running outside CDP ?
+
+Yes, this can be done in a number of ways and it really depends on the 3rd party system you want to connect to. 
+
+Generally speaking, the HTTP Operator is the best way to connect via REST API. An example is provided above. 
+
 
 Don't find your question here? Please reach out to your Cloudera Account Team or [submit your questions thorugh this form](https://www.cloudera.com/contact-sales.html).
 
