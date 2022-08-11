@@ -282,7 +282,6 @@ The CDWRunOperator was contributed by Cloudera in order to orchestrate CDW queri
 Before we can use it in the DAG we need to connect Airflow to CDW. To complete these steps, you must have access to a CDW virtual warehouse. 
 CDE currently supports CDW operations for ETL workloads in Apache Hive virtual warehouses. To determine the CDW hostname to use for the connection:
 
-
 1. Navigate to the Cloudera Data Warehouse Overview page by clicking the Data Warehouse tile in the Cloudera Data Platform (CDP) management console.
 
 2. In the Virtual Warehouses column, find the warehouse you want to connect to.
@@ -315,15 +314,13 @@ jdbc:hive2://*hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site*/default;tran
 
 6. Click Save.
 
-
-
-
+![alt text](img/part3_step1.png)
 
 ##### Editing the DAG Python file
 
-Now you are ready to use the CDWOperator in your Airflow DAG.
+Now you are ready to use the CDWOperator in your Airflow DAG. In your editor make a copy of "firstdag.py" and name it "cdw_dag.py"
 
-Open the file and import the Operator along with other import statements:
+At the top, import the Operator along with other import statements:
 
 ```
 from cloudera.cdp.airflow.operators.cdw_operator import CDWOperator
@@ -339,7 +336,7 @@ show databases;
 dw_step3 = CDWOperator(
     task_id='dataset-etl-cdw',
     dag=example_dag,
-    cli_conn_id='cdw-hive-demo',
+    cli_conn_id='cdw_connection',
     hql=cdw_query,
     schema='default',
     use_proxy_user=False,
@@ -348,6 +345,14 @@ dw_step3 = CDWOperator(
 ```
 
 Notice that the SQL syntax run in the CDW Virtual Warehouse is declared as a separate variable and then passed to the Operator instance as an argument. 
+
+Finally, update task dependencies to include "dw_step3":
+
+```
+spark_step >> shell >> dw_step3
+```
+
+Create a new Airflow CDE Job named "CDW Dag". Upload the new DAG file to the same or a new CDE resource as part of the creation process.
 
 
 
