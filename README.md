@@ -116,22 +116,92 @@ At the bottom of the form, make sure to select "Create" rather than "Create and 
 The Spark CDE Job is now available in the Jobs UI. 
 
 
-##### Step 2: Review the Airflow DAG
+##### Step 2: Review & Edit the Airflow DAG
 
 In your editor, open the "firstdag.py" file located in the cde_jobs folder.
 
+![alt text](img/part2_step5.png)
 
-##### Step 3: Edit the Airflow DAG
+Let's go over the code. Between lines 2 and 7 we import the Python modules needed for the DAG.
+Notice that at line 6 and 7 we import the CDEJobRunOperator and BashOperator. 
+The CDEJobRunOperator was created by Cloudera to support Spark CDE Job.
+The BashOperator is used to perform shell actions inside an Airflow DAG. 
+
+```
+from datetime import datetime, timedelta
+from dateutil import parser
+import pendulum
+from airflow import DAG
+from cloudera.cdp.airflow.operators.cde_operator import CDEJobRunOperator
+from airflow.operators.bash import BashOperator
+```
+
+Between lines 8 and 22 we declare the DAG and its arguments. 
+
+The arguments dictionary includes options for scheduling, setting dependencies, and general execution.
+For a comprehensive list of DAG arguments please consult [this page](https://airflow.apache.org/docs/apache-airflow/stable/tutorial.html#default-arguments) in the documentation.
+
+Once the arguments dictionary is complete it is passed as an argument to the DAG object instance.
+
+```
+default_args = {
+        'owner': 'yourCDPusername',
+        'retry_delay': timedelta(seconds=5),
+        'depends_on_past': False,
+        'start_date': pendulum.datetime(2020, 1, 1, tz="Europe/Amsterdam")
+        }
+
+firstdag = DAG(
+        'airflow-pipeline-demo',
+        default_args=default_args,
+        schedule_interval='@daily',
+        catchup=False,
+        is_paused_upon_creation=False
+        )
+```
+
+Between lines 24 and 28 an instance of the CDEJobRunOperator obect is declared with the following arguments:
+
+* Task ID: This is the name used by the Airflow UI to recognize the node in the DAG.
+* DAG: This has to be the name of the DAG object instance declared at line 16.
+* Job Name: This has to be the name of the Spark CDE Job created in step 1 above. 
+
+```
+spark_step = CDEJobRunOperator(
+        task_id='spark_sql_job',
+        dag=firstdag,
+        job_name='sql_job'
+        )
+```
+
+Between lines 30 and 34 we declare an instance of the BashOperator object with the following arguments:
+
+* Task ID: as above, you can pick an arbitraty string value
+* DAG: This has to be the name of the DAG object instance declared at line 16.
+* Bash Command: the actual shell commands you want to execute. 
+
+Notice that this is just a simple example. You can optionally add more complex syntax with Jinja templating, use DAG variables, or even trigger shell scripts. 
+For more please visit the [Airflow Bash Operator documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/operator/bash.html).
+
+```
+shell = BashOperator(
+        task_id='bash',
+        dag=firstdag,
+        bash_command='echo "Hello Airflow" '
+        )
+```
+
+Finally, at line 36 we declare Task Dependencies. With this statement you can specify the execution sequence of DAG tasks.
+
+```
+spark_step >> shell 
+```
 
 
-##### 
-
-
-
-
-#### Running Your First CDE Airflow DAG
+#### Step 3: Running Your First CDE Airflow DAG
 
 #### Interpreting the CDE Airflow UI
+
 
 
 
