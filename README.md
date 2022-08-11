@@ -352,9 +352,23 @@ Finally, update task dependencies to include "dw_step3":
 spark_step >> shell >> dw_step3
 ```
 
-Create a new Airflow CDE Job named "CDW Dag". Upload the new DAG file to the same or a new CDE resource as part of the creation process.
+DAG names are stored in Airflow and must be unique. Therefore, change the variable name of the DAG object instance to "airflow_cdw_dag" and the DAG ID to "dw_dag" as shown below.
 
+```
+airflow_cdw_dag = DAG(
+        'dw_dag',
+        default_args=default_args,
+        schedule_interval='@daily',
+        catchup=False,
+        is_paused_upon_creation=False
+        )
+```
 
+Notice the new DAG variable needs to be updated in each Operator as well. The completed DAG file is included in the cde_jobs folder for your convenience.
+
+Next, create a new Airflow CDE Job named "CDW Dag". Upload the new DAG file to the same or a new CDE resource as part of the creation process.
+
+![alt text](img/part3_step2.png)
 
 
 #### Using the BashOperator 

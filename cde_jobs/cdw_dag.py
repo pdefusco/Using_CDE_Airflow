@@ -14,8 +14,8 @@ default_args = {
         'start_date': pendulum.datetime(2020, 1, 1, tz="Europe/Amsterdam")
         }
 
-firstdag = DAG(
-        'airflow-pipeline-demo',
+airflow_cdw_dag = DAG(
+        'dw_dag',
         default_args=default_args,
         schedule_interval='@daily',
         catchup=False,
@@ -24,13 +24,13 @@ firstdag = DAG(
 
 spark_step = CDEJobRunOperator(
         task_id='sql_job_new',
-        dag=firstdag,
+        dag=airflow_cdw_dag,
         job_name='sql_job'
         )
 
 shell = BashOperator(
         task_id='bash',
-        dag=firstdag,
+        dag=airflow_cdw_dag,
         bash_command='echo "Hello Airflow" '
         )
 
@@ -40,7 +40,7 @@ show databases;
 
 dw_step3 = CDWOperator(
     task_id='dataset-etl-cdw',
-    dag=firstdag,
+    dag=airflow_cdw_dag,
     cli_conn_id='cdw_connection',
     hql=cdw_query,
     schema='default',
