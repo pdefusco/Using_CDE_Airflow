@@ -40,7 +40,7 @@ show databases;
 
 dw_step3 = CDWOperator(
     task_id='dataset-etl-cdw',
-    dag=example_dag,
+    dag=firstdag,
     cli_conn_id='cdw_connection',
     hql=cdw_query,
     schema='default',
