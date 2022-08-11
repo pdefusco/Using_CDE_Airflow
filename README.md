@@ -197,12 +197,59 @@ Finally, at line 36 we declare Task Dependencies. With this statement you can sp
 spark_step >> shell 
 ```
 
+Before moving on, make sure to open the DAG python file in your editor and replace the current value of the 'Owner' with your CDP Username in the default arguments dictionary.
+No other changes are required at this time.
+
 
 #### Step 3: Running Your First CDE Airflow DAG
 
-#### Interpreting the CDE Airflow UI
+Navigate back to the CDE Jobs page and create a new CDE Job. Make sure to pick the following settings:
+
+```
+Type: Airflow
+Name: FirstDag
+Dag File: Select type "File" and then upload "firstdag.py" to the firstdag CDE Resource you created earlier.
+
+Feel free to select "Create and Run" to trigger the job immediately.
+```
+
+![alt text](img/part2_step6.png)
 
 
+Navigate to the CDE Job Runs page and notice two CDE Jobs are now in progress. 
+One of them is "sql_job" (Spark CDE Job) and the other is "FirstDag" (Airflow CDE Job).
+The former has been triggered by the execution of the latter.
+Wait a few moments and allow for the DAG to complete.
+
+![alt text](img/part2_step7.png)
+
+Next, click on the "FirstDag" link shown in the above screenshot to access the Job Run page. 
+This page shows each run along with associated logs, execution statistics, and the Airflow UI. 
+
+Ensure to select the most recent Run (in the below screenshot number 410) and then click on the Airflow UI tab.
+
+![alt text](img/part2_step8.png)
+
+The first landing page lists all tasks along with their status. 
+Notice that the DAG ID, Task ID and Operator columns are populated with the values set in the DAG python files.
+Next, click on the back arrow on the left side of the screen to navigate to the Airflow UI DAGs view. 
+
+![alt text](img/part2_step9.png)
+
+From the DAGs view you can:
+
+* Pause/unpause a DAG
+* Filter the list of DAGs to show active, paused, or all DAGs
+* Trigger, refresh, or delete a DAG 
+* Navigate quickly to other DAG-specific pages
+
+Identify the DAG by the name you specified in the python file during DAG declaration. Click on it to open the Airflow UI DAG view to drill down with DAG-specific pages. 
+
+![alt text](img/part2_step10.png)
+
+Here, Airflow provides a number of tabs to increase job observability. 
+
+![alt text](img/part2_step11.png)
 
 
 ## 3. Beyond Airflow for Spark Jobs
