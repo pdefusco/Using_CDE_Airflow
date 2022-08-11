@@ -247,14 +247,110 @@ Identify the DAG by the name you specified in the python file during DAG declara
 
 ![alt text](img/part2_step10.png)
 
-Here, Airflow provides a number of tabs to increase job observability. 
+Here, Airflow provides a number of tabs to increase job observability. Below is a brief explanation of the most important once.
 
 ![alt text](img/part2_step11.png)
+
+##### The Tree View
+
+The Tree View tracks DAG tasks across time. Each column represents a DAG Run and each square is a task instance in that DAG Run. 
+Task instances are color-coded depending on success of failure. 
+DAG Runs with a black border represent scheduled runs while DAG Runs with no border are manually triggered.
+
+##### The Graph View
+
+The Graph View shows a simpler diagram of DAG tasks and their dependencies for the selected run.
+You can enable auto-refresh the view to see the status of the tasks update in real time.
+
+##### The Calendar View
+
+The Calendar View shows the state of DAG Runs overlaid on a calendar.
+
+##### The Code View
+
+The Code View shows the code that is used to generate the DAG. This is the DAG python file we used earlier.
 
 
 ## 3. Beyond Airflow for Spark Jobs
 
 #### Using the CDWRunOperator 
+
+The CDWRunOperator was contributed by Cloudera in order to orchestrate CDW queries with Airflow. 
+
+##### CDW Setup Steps
+
+Before we can use it in the DAG we need to connect Airflow to CDW. To complete these steps, you must have access to a CDW virtual warehouse. 
+CDE currently supports CDW operations for ETL workloads in Apache Hive virtual warehouses. To determine the CDW hostname to use for the connection:
+
+
+1. Navigate to the Cloudera Data Warehouse Overview page by clicking the Data Warehouse tile in the Cloudera Data Platform (CDP) management console.
+
+2. In the Virtual Warehouses column, find the warehouse you want to connect to.
+
+3. Click the three-dot menu for the selected warehouse, and then click Copy JDBC URL.
+
+4. Paste the URL into a text editor, and make note of the hostname. For example, the hostname portion of the following JDBC URL is emphasized in italics:
+
+```
+jdbc:hive2://*hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site*/default;transportMode=http;httpPath=cliservice;ssl=true;retries=3;
+```
+
+##### CDE Setup Steps
+
+1. Navigate to the Cloudera Data Engineering Overview page by clicking the Data Engineering tile in the Cloudera Data Platform (CDP) management console.
+
+2. In the CDE Services column, select the service containing the virtual cluster you are using, and then in the Virtual Clusters column, click  Cluster Details for the virtual cluster.
+
+3. Click AIRFLOW UI.
+
+4. From the Airflow UI, click the Connection link from the Admin menu.
+
+5. Click the plus sign to add a new record, and then fill in the fields:
+
+* Conn Id: Create a unique connection identifier, such as cdw-hive-demo.
+* Conn Type: Select Hive Client Wrapper.
+* Host: Enter the hostname from the JDBC connection URL. Do not enter the full JDBC URL.
+* Schema: default
+* Login: Enter your workload username and password.
+
+6. Click Save.
+
+
+
+
+
+##### Editing the DAG Python file
+
+Now you are ready to use the CDWOperator in your Airflow DAG.
+
+Open the file and import the Operator along with other import statements:
+
+```
+from cloudera.cdp.airflow.operators.cdw_operator import CDWOperator
+```
+
+At the bottom of the file add an instance of the CDWOperator object.
+
+```
+cdw_query = """
+show databases;
+"""
+
+dw_step3 = CDWOperator(
+    task_id='dataset-etl-cdw',
+    dag=example_dag,
+    cli_conn_id='cdw-hive-demo',
+    hql=cdw_query,
+    schema='default',
+    use_proxy_user=False,
+    query_isolation=True
+)
+```
+
+Notice that the SQL syntax run in the CDW Virtual Warehouse is declared as a separate variable and then passed to the Operator instance as an argument. 
+
+
+
 
 #### Using the BashOperator 
 
