@@ -374,9 +374,39 @@ Navigate to the CDE Job Runs Page and open the run's Airflow UI. Then open the T
 
 ![alt text](img/part3_step3.png)
 
+
+#### Printing Context Variables with the BashOperator
+
+When Airflow runs a task, it collects several variables and passes these to the context argument on the execute() method. 
+These variables hold information about the current task. 
+
+Open the "bash_dag.py" file and examine the contents. Notice that at lines 52-56 a new instance of the BashOperator has been declared with the following entries:
+
+```
+
+also_run_this = BashOperator(
+    task_id='also_run_this',
+    dag=bash_airflow_dag,
+    bash_command='echo "yesterday={{ yesterday_ds }} | today={{ ds }}| tomorrow={{ tomorrow_ds }}"',
+)
+
+```
+
+Above we printed the "yesterday_ds", "ds" and tomorrow_ds" dates. There are many more and you can find the full list [here](https://airflow.apache.org/docs/apache-airflow/stable/macros-ref.html#default-variables) 
+
+Variables can also be saved and reused by other operators. We will explore this in the section on XComs in section 4. 
+
+
 #### Using the Python Operator
 
-using the python operator to print out all context variables
+The PythonOperator allows you to run Python code inside the DAG. 
+This is particularly helpful as it allows you to customize your DAG logic in a variety of ways. 
+
+The PythonOperator requires implementing a callable inside the DAG file. Then, the method is called from the operator. 
+
+Lines 60-67 in "py_dag.py" show how to use the operator to print out all Conext Variables in one run. 
+
+```
 
 def _print_context(**context):
    print(context)
@@ -387,10 +417,17 @@ print_context = PythonOperator(
     dag=dag,
 )
 
+```
 
-#### Using the BashOperator 
+Execute the DAG and once it completes open the run in the Job Runs page. Ensure to select the correct Airflow task which in this case is "print_context":
 
-You already used the Bash Operator in part 2. In this section we will explore more about how it can help you improve your Airflow DAGs.
+![alt text](img/airflow_guide_1.png)
+
+Scroll to the bottom and validate the output. 
+
+
+## 4. Airflow DAG Advanced Features
+
 
 ##### Using Jinja Templating with the BashOperator 
 
@@ -398,18 +435,8 @@ You already used the Bash Operator in part 2. In this section we will explore mo
 ##### Using the BashOperator with an external API
 
 
-
-
-
-
-
-
 #### Using the HTTPOperator
 
-
-
-
-## 4. Airflow DAG Advanced Features
 
 #### Using XComs
 
