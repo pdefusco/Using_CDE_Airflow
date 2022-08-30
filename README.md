@@ -370,8 +370,39 @@ Next, create a new Airflow CDE Job named "CDW Dag". Upload the new DAG file to t
 
 ![alt text](img/part3_step2.png)
 
+Navigate to the CDE Job Runs Page and open the run's Airflow UI. Then open the Tree View and validate that the job has succeeded.
+
+![alt text](img/part3_step3.png)
+
+#### Using the Python Operator
+
+using the python operator to print out all context variables
+
+def _print_context(**context):
+   print(context)
+ 
+print_context = PythonOperator(
+    task_id="print_context",
+    python_callable=_print_context,
+    dag=dag,
+)
+
 
 #### Using the BashOperator 
+
+You already used the Bash Operator in part 2. In this section we will explore more about how it can help you improve your Airflow DAGs.
+
+##### Using Jinja Templating with the BashOperator 
+
+
+##### Using the BashOperator with an external API
+
+
+
+
+
+
+
 
 #### Using the HTTPOperator
 
