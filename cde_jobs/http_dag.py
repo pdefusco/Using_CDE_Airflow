@@ -8,6 +8,8 @@ from cloudera.cdp.airflow.operators.cdw_operator import CDWOperator
 from airflow.operators.bash import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.http_operator import SimpleHttpOperator
+from airflow.models import Variable
+
 
 default_args = {
         'owner': 'pauldefusco',
@@ -67,6 +69,11 @@ print_context = PythonOperator(
     dag=http_dag
 )
 
+foo = Variable.get("rapids_api_host")
+foo_json = Variable.get("rapids_api_key", deserialize_json=True)
+
+print(foo)
+print(foo_json)
 
 def handle_response(response):
     if response.status_code == 200:
