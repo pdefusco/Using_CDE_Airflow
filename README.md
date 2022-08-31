@@ -306,7 +306,7 @@ jdbc:hive2://*hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site*/default;tran
 
 5. Click the plus sign to add a new record, and then fill in the fields:
 
-* Conn Id: Create a unique connection identifier, such as cdw-hive-demo.
+* Conn Id: Create a unique connection identifier, such as "cdw_connection".
 * Conn Type: Select Hive Client Wrapper.
 * Host: Enter the hostname from the JDBC connection URL. Do not enter the full JDBC URL.
 * Schema: default
@@ -432,10 +432,12 @@ Scroll to the bottom and validate the output.
 #### Using the SimpleHttpOperator
 
 You can use the SimpleHttpOperator to call HTTP requests and get the response text back. 
-The Operator can be a great fit when you need to interact with 3rd party systems, APIs, and perform actions based on complex control flow logic. 
+The Operator can help when you need to interact with 3rd party systems, APIs, and perform actions based on complex control flow logic. 
 
 In the following example we will send a request to the Chuck Norris API from the Airflow DAG. 
-Before updating the DAG file, we need to set up a new Airflow Connection. 
+Before updating the DAG file, we need to set up a new Airflow Connection and Airflow Variables. 
+
+##### Creating an HTTP Airflow Connection
 
 1. Navigate to the CDE Virtual Cluster Service Details page and then open the Airflow UI. 
 2. Open the Connections page under the Admin tab. 
@@ -460,15 +462,49 @@ Before updating the DAG file, we need to set up a new Airflow Connection.
 
 5. Save the new connection and close the Airflow UI. 
 
-Next, open "http_dag.py" and familiarize yourself with the code. The new operator is used between lines 71 and 89.
-The "http_conn_id" parameter is mapped to the Connection ID you configured in the prior step. 
-The "response_check" parameter allows you to specify a python method to validate responses. This is the "handle_response" method declared at line 71.   
+##### Creating Airflow Variables
 
+Airflow Variables allow you to parameterize your operators. Airflow Variables are used as environment variables for the DAG. 
+Therefore, if you are looking to temporarily store operator results in the DAG and pass values to downstream operators you should use XComs (shown in the next section).
+
+In our example, we will use them to pass an API KEY and HOST value to the SimpleHttpOperator below. 
+To set up Airflow Variables, navigate back to the CDE Virtual Cluster Service Details page and open the Airflow UI. 
+
+Then, click on the "Variables" tab under the "Admin" drop down at the top of the page.
+
+![alt text](img/airflow_guide_6.png)
+
+Create two variables wit the following entries:
 
 ```
+First Variable:
+* Key: rapids_api_host
+* Value: matchilling-chuck-norris-jokes-v1.p.rapidapi.com
+
+Second Variable:
+* Key: rapids_api_key
+* Value: f16c49e390msh7e364a479e33b3dp10fff7jsn6bc84b000b75
+```
+
+![alt text](img/airflow_guide_7.png)
+
+
+##### Working with the DAG
+
+Next, open "http_dag.py" and familiarize yourself with the code. The code relevant to the new oerator is used between lines 71 and 92.
+
+* Notice that at line 11 we are importing the Variable type from the airflow.models module.
+* We are then creating two Airflow Variables at lines 72 and 73. 
+* The "http_conn_id" parameter is mapped to the Connection ID you configured in the prior step. 
+* The "response_check" parameter allows you to specify a python method to validate responses. This is the "handle_response" method declared at line 71.   
+
+```
+api_host = Variable.get("rapids_api_host")
+api_key = Variable.get("rapids_api_key")
+
 def handle_response(response):
     if response.status_code == 200:
-        print("Received 2000 Ok")
+        print("Received 200 Ok")
         return True
     else:
         print("Error")
@@ -480,8 +516,8 @@ http_task = SimpleHttpOperator(
     http_conn_id="chuck_norris_connection",
     endpoint="/jokes/random",
     headers={"Content-Type":"application/json",
-            "X-RapidAPI-Key": "f16c49e390msh7e364a479e33b3dp10fff7jsn6bc84b000b75",
-            "X-RapidAPI-Host": "matchilling-chuck-norris-jokes-v1.p.rapidapi.com"},
+            "X-RapidAPI-Key": api_key,
+            "X-RapidAPI-Host": api_host},
     response_check=lambda response: handle_response(response),
     dag=http_dag
 )
@@ -494,7 +530,7 @@ As before, execute the DAG as a new CDE Job and validate results for the "http_t
 
 #### Using XComs
 
-Although the request in the prior step was successful the operator did not actually return the response. 
+Although the request in the prior step was successful the operator did not actually return the response to the DAG. 
 XComs (short for “cross-communications”) are a mechanism that let Tasks talk to each other, as by default Tasks are entirely isolated and may be running on entirely different machines.
 
 Practically XComs allow your operators to store results into a governed data structure and then reuse the values within the context of different operators. 
@@ -503,7 +539,7 @@ They are only designed for small amounts of data; do not use them to pass around
 
  
 
-#### Writing a Custom Opeator
+#### Writing a Custom Operator
 
 
 
