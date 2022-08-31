@@ -27,7 +27,7 @@ In order to follow the steps you need:
 1. Airflow Concepts
 2. Getting Started with Airflow in CDE
 3. Beyond Airflow for Spark Jobs
-4. Airflow DAG Advanced Features
+4. More Airflow DAG Features
 5. Airflow Job Management with the CDE API and CLI
 6. CDE Airflow FAQs
 
@@ -426,23 +426,85 @@ Execute the DAG and once it completes open the run in the Job Runs page. Ensure 
 Scroll to the bottom and validate the output. 
 
 
-## 4. Airflow DAG Advanced Features
+## 4. More Airflow DAG Features
 
 
-##### Using Jinja Templating with the BashOperator 
+#### Using the SimpleHttpOperator
+
+You can use the SimpleHttpOperator to call HTTP requests and get the response text back. 
+The Operator can be a great fit when you need to interact with 3rd party systems, APIs, and perform actions based on complex control flow logic. 
+
+In the following example we will send a request to the Chuck Norris API from the Airflow DAG. 
+Before updating the DAG file, we need to set up a new Airflow Connection. 
+
+1. Navigate to the CDE Virtual Cluster Service Details page and then open the Airflow UI. 
+2. Open the Connections page under the Admin tab. 
+
+![alt text](img/airflow_guide_2.png)
+
+3. Add a new connection
+
+![alt text](img/airflow_guide_3.png)
+
+4. Configure the connection by entering the following values for the following parameters. Leave the remaining entries blank.
+
+```
+
+* Connection ID: chuck_norris_connection
+* Connection Type: HTTP
+* Host: https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/
+
+```
+
+![alt text](img/airflow_guide_4.png)
+
+5. Save the new connection and close the Airflow UI. 
+
+Next, open "http_dag.py" and familiarize yourself with the code. The new operator is used between lines 71 and 89.
+The "http_conn_id" parameter is mapped to the Connection ID you configured in the prior step. 
+The "response_check" parameter allows you to specify a python method to validate responses. This is the "handle_response" method declared at line 71.   
 
 
-##### Using the BashOperator with an external API
+```
+def handle_response(response):
+    if response.status_code == 200:
+        print("Received 2000 Ok")
+        return True
+    else:
+        print("Error")
+        return False
 
+http_task = SimpleHttpOperator(
+    task_id="chuck_norris_task",
+    method="GET",
+    http_conn_id="chuck_norris_connection",
+    endpoint="/jokes/random",
+    headers={"Content-Type":"application/json",
+            "X-RapidAPI-Key": "f16c49e390msh7e364a479e33b3dp10fff7jsn6bc84b000b75",
+            "X-RapidAPI-Host": "matchilling-chuck-norris-jokes-v1.p.rapidapi.com"},
+    response_check=lambda response: handle_response(response),
+    dag=http_dag
+)
+```
 
-#### Using the HTTPOperator
+As before, execute the DAG as a new CDE Job and validate results for the "http_task" under the Job Runs Logs tab.
+
+![alt text](img/airflow_guide_5.png)
 
 
 #### Using XComs
 
+Although the request in the prior step was successful the operator did not actually return the response. 
+XComs (short for “cross-communications”) are a mechanism that let Tasks talk to each other, as by default Tasks are entirely isolated and may be running on entirely different machines.
+
+Practically XComs allow your operators to store results into a governed data structure and then reuse the values within the context of different operators. 
+An XCom is identified by a key (essentially its name), as well as the task_id and dag_id it came from. 
+They are only designed for small amounts of data; do not use them to pass around large values, like dataframes.
+
+ 
+
 #### Writing a Custom Opeator
 
-#### Using a Python Environment CDE Resource for your CDE Airflow DAG
 
 
 ## 5. Airflow Job Management with the CDE API and CLI
