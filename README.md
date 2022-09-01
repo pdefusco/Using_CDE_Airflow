@@ -287,10 +287,12 @@ CDE currently supports CDW operations for ETL workloads in Apache Hive virtual w
 
 3. Click the three-dot menu for the selected warehouse, and then click Copy JDBC URL.
 
-4. Paste the URL into a text editor, and make note of the hostname. For example, the hostname portion of the following JDBC URL is emphasized in italics:
+4. Paste the URL into a text editor, and make note of the hostname. For example, starting with the following url the hostname is shown below:
 
 ```
-jdbc:hive2://*hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site*/default;transportMode=http;httpPath=cliservice;ssl=true;retries=3;
+Original URL: jdbc:hive2://hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site/default;transportMode=http;httpPath=cliservice;ssl=true;retries=3;
+
+Hostname: hs2-aws-2-hive.env-k5ip0r.dw.ylcu-atmi.cloudera.site
 ```
 
 ##### CDE Setup Steps
