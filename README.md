@@ -630,7 +630,7 @@ Yes, if you have complex Airflow implementations and do not want to replace them
 
 2. Can airflow be used to orchestrate workloads on Private cloud base?
 
-Yes, please visit this github for a demonstration (*coming soon*).
+Yes, please visit [this github](https://github.com/pdefusco/Hybrid_CDE_Airflow) for a demonstration (*coming soon*).
 
 
 3. Can airflow be run as a standalone product in CDP?
