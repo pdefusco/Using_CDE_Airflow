@@ -1,6 +1,5 @@
 # Using CDE Airflow
 
-## NB: This project is WIP 
 
 ## Objective
 
@@ -579,9 +578,6 @@ Scroll all the way down and validate that a Chuck Norris quote has been printed 
 
 ![alt text](img/airflow_guide_9.png)
 
-#### Writing a Custom Operator
-
-
 
 ## 5. Airflow Job Management with the CDE API and CLI
 
@@ -590,6 +586,8 @@ Scroll all the way down and validate that a Chuck Norris quote has been printed 
 For Spark CDE Jobs, the CDE CLI provides an intuitive solution to create and manage Airflow CDE Jobs. 
 
 The CDE CLI commands to create a resource and upload files to it are identical as in the Spark CDE Job section.
+
+Before you can work on the following steps you have to download the CDE CLI as shown [here](https://docs.cloudera.com/data-engineering/cloud/cli-access/topics/cde-cli.html).
 
 ##### Submit Airflow CDE Job with local DAG file
 
@@ -623,29 +621,33 @@ curl -H "Authorization: Bearer $ACCESS_TOKEN" -X 'POST' \
 
 1. Can you connect a CDE Airflow Instance to an Open Source instance outside of CDP/CDE?
 
-Yes, if you have complex Airflow implementations and have a need to keep them running you can connect one to the other
+Yes, if you have complex Airflow implementations and do not want to replace them with CDE Airflow you can run them in tandem as shown [here](https://docs.cloudera.com/data-engineering/cloud/orchestrate-workflows/topics/cde-airflow-provider.html).
 
 
 2. Can airflow be used to orchestrate workloads on Private cloud base?
 
-Yes, please visit this github for a demonstration (*coming soon*)
+Yes, please visit this github for a demonstration (*coming soon*).
 
 
-3. Can airflow be run as a standalone product?
+3. Can airflow be run as a standalone product in CDP?
 
-Not as of CDE 1.16. This is on the CDE roadmap. 
+As of CDE 1.16 you need a CDE Virtual Cluster to run CDE Airflow. An Airflow Only Service is on the product roadmap. 
 
 
 4. Can I install some cloud native plugins into the version of airflow shipped by Cloudera?
 
-You cannot install plugins in CDE Public Cloud however you can do so in CDE Private Cloud.
+You cannot install plugins in CDE Public Cloud however you can do so in CDE Private Cloud or pair up an Open Source Airflow instance with a CDE Airflow instance as shown [here](https://docs.cloudera.com/data-engineering/cloud/orchestrate-workflows/topics/cde-airflow-provider.html)
 
 
 5. Can airflow be used to orchestrate workloads running outside CDP ?
 
-Yes, this can be done in a number of ways and it really depends on the 3rd party system you want to connect to. 
+Yes, we saw an example in section 4 of this tutorial but this can be done in a number of ways based on your use case. 
+In general using HTTP Operators is the simplest way to connect via REST API, but Airflow provides many alternatives such as hooks, operators, and plugins.
 
-Generally speaking, the HTTP Operator is the best way to connect via REST API. An example is provided above. 
+
+6. Is there any tooling that will help me convert Oozie workflows to Airflow DAGs?
+
+Yes, the Oozie2CDE API can convert Oozie workflows to CDE Airflow and Spark Jobs. You can find out more [here](https://github.com/pdefusco/Oozie2CDE_Migration).
 
 
 Don't find your question here? Please reach out to your Cloudera Account Team or [submit your questions thorugh this form](https://www.cloudera.com/contact-sales.html).
@@ -653,14 +655,17 @@ Don't find your question here? Please reach out to your Cloudera Account Team or
 
 ## Conclusions & Next Steps
 
-CDE is the Cloudera Data Engineering Service, a containerized managed service for Spark and Airflow. 
-Top benefits of using CDE include:
+CDE is the Cloudera Data Engineering Service, a containerized managed service for Spark and Airflow. Each CDE virtual cluster includes an embedded instance of Apache Airflow.
 
-* Ability to pick Spark versions
-* Apache Airflow Scheduling
-* Enhanced Observability with Tuning, Job Analysis and Troubleshooting interfaces.
-* Job Management via a CLI and an API. 
+With Airflow based pipelines users can now specify their data pipeline using a simple python configuration file.
 
+A basic CDE Airflow DAG can be composed of a mix of hive and spark operators that automatically run jobs on CDP Data Warehouse (CDW) and CDE, respectively; with the underlying security and governance provided by SDX.
+
+However, thanks to the flexibility of Airflow, CDE can also empower users with the ability to integrate with other CDP Data Services and 3rd party systems. 
+For example, you can combine the operators we have seen above to create complex pipeleines across multiple domains such as Datawarehousing, Machine Learning, and much more.
+
+![alt text](img/airflow_guide_11.png)
+ 
 If you are exploring CDE you may find the following tutorials relevant:
 
 * [Spark 3 & Iceberg](https://github.com/pdefusco/Spark3_Iceberg_CML): a quick intro of Time Travel Capabilities with Spark 3
