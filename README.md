@@ -62,9 +62,11 @@ In addition, you can automate migrations from Oozie on CDP Public Cloud Data Hub
 
 #### Open Source vs CDE Airflow
 
-CDE packages the open source version of Airflow. Airflow is maintained and upgraded at each CDE version update. For example, the version of CDE 1.16 includes Airflow 2.2.5. 
+CDE packages the open source version of Airflow. Airflow is maintained and upgraded at each CDE version update. For example, CDE 1.16 includes Airflow 2.2.5. 
 
-CDE Airflow imposes no limitations on Operators, Plugins or other integrations with external platforms. Users are free to deploy Airflow DAGs in CDE as dictated by the use case. However, Cloudera contributed two operators to the Airflow Community: 
+CDE Airflow supports only the core operators but imposes no limitations on Operators, Plugins or other integrations with external platforms. Users are free to deploy Airflow DAGs in CDE as dictated by the use case. 
+
+Furthemore, Cloudera contributed two operators to the Airflow Community: 
 
 * CDE Operator: used to orchestrate Spark CDE Jobs. This has no requirements other than creating a Spark CDE Job separately and then referencing it within the Airflow DAG syntax.
 * CDW Operator: used to orchestrate CDW Hive or Impala queries. This requires a Cloudera Virtual Warehouse and setting up an Airflow connection to it. 
