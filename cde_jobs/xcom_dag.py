@@ -101,6 +101,4 @@ return_quote = PythonOperator(
     dag=xcom_dag
 )
 
-#response.json()
-
 spark_step >> shell >> dw_step3 >> also_run_this >> print_context >> http_task >> return_quote
