@@ -9,7 +9,6 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.models import Variable
-import json
 
 
 default_args = {
@@ -19,8 +18,8 @@ default_args = {
         'start_date': pendulum.datetime(2020, 1, 1, tz="Europe/Amsterdam")
         }
 
-http_dag = DAG(
-        'cde_http_dag',
+xcom_dag = DAG(
+        'cde_xcom_dag',
         default_args=default_args,
         schedule_interval='@daily',
         catchup=False,
@@ -29,13 +28,13 @@ http_dag = DAG(
 
 spark_step = CDEJobRunOperator(
         task_id='sql_job_new',
-        dag=http_dag,
+        dag=xcom_dag,
         job_name='sql_job'
         )
 
 shell = BashOperator(
         task_id='bash',
-        dag=http_dag,
+        dag=xcom_dag,
         bash_command='echo "Hello Airflow" '
         )
 
@@ -45,7 +44,7 @@ show databases;
 
 dw_step3 = CDWOperator(
     task_id='dataset-etl-cdw',
-    dag=http_dag,
+    dag=xcom_dag,
     cli_conn_id='cdw_connection',
     hql=cdw_query,
     schema='default',
@@ -55,7 +54,7 @@ dw_step3 = CDWOperator(
 
 also_run_this = BashOperator(
     task_id='also_run_this',
-    dag=http_dag,
+    dag=xcom_dag,
     bash_command='echo "yesterday={{ yesterday_ds }} | today={{ ds }}| tomorrow={{ tomorrow_ds }}"',
 )
 
@@ -66,7 +65,7 @@ def _print_context(**context):
 print_context = PythonOperator(
     task_id="print_context",
     python_callable=_print_context,
-    dag=http_dag
+    dag=xcom_dag
 )
 
 api_host = Variable.get("rapids_api_host")
@@ -89,7 +88,7 @@ http_task = SimpleHttpOperator(
             "X-RapidAPI-Key": api_key,
             "X-RapidAPI-Host": api_host},
     response_check=lambda response: handle_response(response),
-    dag=http_dag,
+    dag=xcom_dag,
     do_xcom_push=True
 )
 
@@ -99,8 +98,7 @@ def _print_chuck_norris_quote(**context):
 return_quote = PythonOperator(
     task_id="print_quote",
     python_callable=_print_chuck_norris_quote,
-    dag=http_dag,
-    do_xcom_push=True
+    dag=xcom_dag
 )
 
 #response.json()

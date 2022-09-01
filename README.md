@@ -537,7 +537,47 @@ Practically XComs allow your operators to store results into a governed data str
 An XCom is identified by a key (essentially its name), as well as the task_id and dag_id it came from. 
 They are only designed for small amounts of data; do not use them to pass around large values, like dataframes.
 
- 
+Open "xcom_dag.py" and familiarize yourself with the code. Notice the following changes in the code between lines 82 and 103:
+
+* At line 92 we added a "do_xcom_push=True" argument. This allows the response to be temporarily saved in the DAG.
+* At line 95 we introduced a new Python method "_print_chuck_norris_quote" and at line 96 we use the built-in "xcom_pull" method to retrieve the temporary value from the SimpleHttpOperator task.
+* At line 97 we declare a new Python Operator runnint the method above.  
+
+```
+http_task = SimpleHttpOperator(
+    task_id="chuck_norris_task",
+    method="GET",
+    http_conn_id="chuck_norris_connection",
+    endpoint="/jokes/random",
+    headers={"Content-Type":"application/json",
+            "X-RapidAPI-Key": api_key,
+            "X-RapidAPI-Host": api_host},
+    response_check=lambda response: handle_response(response),
+    dag=xcom_dag,
+    do_xcom_push=True
+)
+
+def _print_chuck_norris_quote(**context):
+    return context['ti'].xcom_pull(task_ids='chuck_norris_task')
+
+return_quote = PythonOperator(
+    task_id="print_quote",
+    python_callable=_print_chuck_norris_quote,
+    dag=xcom_dag
+)
+```
+
+Using "xcom_dag.py", create a new Airflow DAG with the name "xcom_dag" and execute it. 
+
+![alt text](img/airflow_guide_10.png)
+
+Open the Job Run Logs page and select the "print_quote" task. 
+
+![alt text](img/airflow_guide_8.png)
+
+Scroll all the way down and validate that a Chuck Norris quote has been printed out. Which one did you get?
+
+![alt text](img/airflow_guide_9.png)
 
 #### Writing a Custom Operator
 
