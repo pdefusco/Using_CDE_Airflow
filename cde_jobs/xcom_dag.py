@@ -9,6 +9,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.models import Variable
+import json
 
 
 default_args = {
@@ -88,7 +89,20 @@ http_task = SimpleHttpOperator(
             "X-RapidAPI-Key": api_key,
             "X-RapidAPI-Host": api_host},
     response_check=lambda response: handle_response(response),
-    dag=http_dag
+    dag=http_dag,
+    do_xcom_push=True
 )
 
-spark_step >> shell >> dw_step3 >> also_run_this >> print_context >> http_task
+def _print_chuck_norris_quote(**context):
+    return context['ti'].xcom_pull(task_ids='chuck_norris_task')
+
+return_quote = PythonOperator(
+    task_id="print_quote",
+    python_callable=_print_chuck_norris_quote,
+    dag=http_dag,
+    do_xcom_push=True
+)
+
+#response.json()
+
+spark_step >> shell >> dw_step3 >> also_run_this >> print_context >> http_task >> return_quote
