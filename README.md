@@ -684,5 +684,10 @@ If you are exploring CDE you may find the following tutorials relevant:
 
 * [Postman2CDE](https://github.com/pdefusco/Oozie2CDE_Migration): using the Postman API to bootstrap CDE Services
 
+For more information on the Cloudera Data Platform and its form factors please visit [this site](https://docs.cloudera.com/).
+
+For more information on migrating Spark jobs to CDE, please reference [this guide](https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/cdppvc-data-migration-spark/topics/cdp-migration-spark-cdp-cde.html). 
+
+If you have any questions about CML or would like to see a demo, please reach out to your Cloudera Account Team or send a message [through this portal](https://www.cloudera.com/contact-sales.html) and we will be in contact with you soon.
 
 
